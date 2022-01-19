@@ -1,0 +1,283 @@
+.alec .btn-success:hover {
+    color: #fff;
+}
+
+.alec a {
+    color: #56b5bf;
+}
+
+.alec a:hover, a:focus, .alec a.asc, .alec a.desc {
+    color: #386b85;
+}
+
+.alec .s2-togall-select .s2-select-label {
+    display: none;
+}
+
+.alec .summary {
+    display: inline-block;
+}
+
+.btn.btn-blue {
+    background: #56b5bf;
+    color: #fff;
+}
+
+.experiment-index .form-control {
+    padding: 5px;
+}
+
+#chart_start, #chart_end {
+    width: 42px;
+}
+
+@media (min-width: 992px) {
+    .limits {
+        float: left
+    }
+}
+
+@media (min-width: 768px) {
+    .limits {
+        float: left
+    }
+}
+
+@media (min-width: 1200px) {
+    .limits {
+        float: right
+    }
+}
+
+.limits .form-control {
+    display: inline-block;
+}
+
+.alec .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px;
+}
+
+.reset {
+    float: left
+}
+
+#js-legend span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 100%;
+    margin-right: 16px;
+    margin-bottom: -2px;
+}
+#js-legend li {
+    margin-bottom: 10px;
+    display: inline-block;
+    margin-right: 10px;
+}
+#js-legend {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.alec .pagination > .active > a, .alec .pagination > .active > span, .alec .pagination > .active > a:hover, .alec .pagination > .active > span:hover, .alec .pagination > .active > a:focus, .alec .pagination > .active > span:focus {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #56b5bf;
+    border-color: #56b5bf;
+}
+
+.alec-navbar.navbar-inverse .navbar-nav > li > a {
+    font-size: 13px;
+}
+.alec-navbar.navbar-inverse .btn-link {
+    font-size: 13px;
+}
+.alec-navbar.navbar-inverse .navbar-brand img {
+    height: 30px;
+    display: inline-block;
+}
+
+.alec-navbar.navbar-inverse {
+    background-color: #56b5bf;
+    border-color: #56b5bf;
+}
+.alec-navbar.navbar-inverse .navbar-nav > li > a {
+    color: #e8e8f7;
+}
+.alec-navbar.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+.alec-navbar.navbar-inverse .dropdown-menu > li > a {
+    font-size: 13px;
+}
+.alec-navbar.navbar-inverse .navbar-nav > .open > a, .alec-navbar.navbar-inverse .navbar-nav > .open > a:hover, .alec-navbar.navbar-inverse .navbar-nav > .open > a:focus {
+    color: #e8e8f7;
+    background-color: #386b85;
+}
+.alec-navbar.navbar-inverse .btn-link {
+    color: #e8e8f7;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.alec .breadcrumb {
+    margin-bottom: 35px;
+}
+.alec-navbar.navbar-inverse .btn-link {
+    color: #e8e8f7;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.alec .table-bordered, .alec .table-bordered > tbody > tr > td, .alec .table-bordered > thead > tr > td, .alec .table-bordered > thead > tr > th {
+    border: none;
+}
+
+
+.alec-navbar.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: #386b85;
+}
+.alec-navbar.navbar-inverse .navbar-toggle {
+    border-color: #386b85;
+}
+
+.alec-navbar.navbar-inverse .navbar-nav > .active > a {
+    background-color: #386b85;
+    border-color: #386b85;
+}
+
+.alec-navbar.navbar-inverse .navbar-nav > .active > a, .alec-navbar.navbar-inverse .navbar-nav > .active > a:hover {
+    background-color: #386b85;
+    border-color: #386b85;
+}
+
+@media (max-width: 1200px) {
+    .alec-navbar .navbar-header {
+        float: none;
+    }
+    .alec-navbar .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .alec-navbar .navbar-toggle {
+        display: block;
+    }
+    .alec-navbar .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .alec-navbar .navbar-fixed-top {
+        top: 0;
+        border-width: 0 0 1px;
+    }
+    .alec-navbar .navbar-collapse.collapse {
+        display: none!important;
+    }
+
+    .alec-navbar .navbar-nav {
+        float: none!important;
+        margin-top: 7.5px;
+    }
+    .alec-navbar .navbar-nav>li {
+        float: none;
+    }
+    .alec-navbar .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .alec-navbar .collapse.in{
+        display:block !important;
+    }
+
+    .alec-navbar .navbar-brand {
+        display: inline-block;
+        float: none;
+    }
+
+    .alec-navbar .navbar-form.form-inline {
+        display: inline-block;
+        border-color: transparent;
+        margin: 4px;
+        padding: 5px;
+    }
+
+    .alec-navbar .navbar-form .form-control {
+        display: inline-block;
+        width: auto;
+        vertical-align: middle;
+    }
+
+}
+
+.alec .alec-navbar.navbar-inverse .btn.btn-link {
+    color: #e8e8f7;
+    background: #6563bb;
+}
+
+.alec .s2-togall-button {
+    display: inline-block;
+    font-weight: 400;
+    color: #6563bb;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+section.login-form {
+    display: block;
+    margin: 70px auto 0;
+    width: 440px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: #e3e2ff;
+}
+
+section.login-form .btn-primary {
+    color: #fff;
+    background-color: #6563bb;
+    border-color: #6563bb;
+    margin: 0 auto;
+    width: 100px;
+    display: block;
+}
+section.login-form .btn-primary:active, section.login-form .btn-primary:hover {
+    color: #fff;
+    background-color: #3e3c92;
+    border-color: #3e3c92;
+}
+
+section.error {
+    display: block;
+    margin: 70px auto;
+    width: 440px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: #e3e2ff;
+}
+section.error h3 {
+    margin-top: 10px;
+}
+
+.alec .alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    position: absolute;
+    top: 70px;
+    left: 30px;
+    max-width: 370px;
+}
+
+/* Select2 fixes */
+.alec .select2-container .select2-selection--multiple .select2-selection__rendered {
+    display: block;
+}
+.select2-container--krajee .select2-selection--multiple .select2-selection__choice__remove {
+    margin: 0 0 0 10px !important;
+    font-size: 16px;
+}
+.footer {
+    padding-bottom: 54px; /* crutch: padding for a fixed panel */
+}
+
