@@ -1,13 +1,13 @@
 <?php
 
-namespace app\models;
+namespace app\models\ar;
 
 /**
- * This is the ActiveQuery class for [[Experiment]].
+ * This is the ActiveQuery class for [[DwellingType]].
  *
- * @see ExperimentOld
+ * @see DwellingType
  */
-class ExperimentQuery extends \yii\db\ActiveQuery
+class DwellingTypeQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class ExperimentQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return ExperimentOld[]|array
+     * @return DwellingType[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class ExperimentQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return ExperimentOld|array|null
+     * @return DwellingType|array|null
      */
     public function one($db = null)
     {

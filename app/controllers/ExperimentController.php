@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Experiment;
+use app\models\ExperimentOld;
 use app\models\ExperimentSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -68,7 +68,7 @@ class ExperimentController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Experiment();
+        $model = new ExperimentOld();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -117,12 +117,12 @@ class ExperimentController extends Controller
      * Finds the Experiment model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Experiment the loaded model
+     * @return ExperimentOld the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Experiment::findOne($id)) !== null) {
+        if (($model = ExperimentOld::findOne($id)) !== null) {
             return $model;
         }
 
