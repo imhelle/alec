@@ -3,7 +3,7 @@
 namespace app\console\controllers;
 
 use app\models\common\GeneToSource;
-use app\models\Experiment;
+use app\models\ExperimentOld;
 use yii\console\Controller;
 use yii\db\Exception;
 
@@ -20,7 +20,7 @@ class DataController extends Controller
             $counter = 0;
             while (($data = fgetcsv($f)) !== false) {
                 if ($data[10] === "0") {
-                    $experiment = new Experiment();
+                    $experiment = new ExperimentOld();
                     $experiment->drug = 'Control';
                     $experiment->drug_name = 'Control';
                     $experiment->group = 'Controls';

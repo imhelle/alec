@@ -18,7 +18,7 @@ use Yii;
  * @property string|null $drug
  * @property string|null $drug_name
  */
-class Experiment extends \app\models\common\Experiment
+class ExperimentOld extends \app\models\ar\ExperimentOld
 {
     public $name;
 

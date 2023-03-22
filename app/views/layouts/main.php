@@ -12,7 +12,8 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 
 CmsAsset::register($this);
-$this->registerCssFile('/assets/css/main.css');
+$css = getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/assets/css/main.css' : '/assets/css/main.css';
+$this->registerCssFile($css);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

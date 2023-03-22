@@ -1,13 +1,13 @@
 <?php
 
-namespace app\models\common;
+namespace app\models\ar;
 
 /**
  * This is the ActiveQuery class for [[\app\models\TreatmentTimeUnit]].
  *
- * @see \app\models\Experiment
+ * @see \app\models\ExperimentOld
  */
-class ExperimentQuery extends \yii\db\ActiveQuery
+class ExperimentOldQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class ExperimentQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \app\models\Experiment[]|array
+     * @return \app\models\ExperimentOld[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class ExperimentQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return \app\models\Experiment|array|null
+     * @return \app\models\ExperimentOld|array|null
      */
     public function one($db = null)
     {

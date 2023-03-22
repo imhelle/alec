@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\common;
+namespace app\models\ar;
 
 use Yii;
 
@@ -18,14 +18,14 @@ use Yii;
  * @property string|null $strain
  * @property string|null $source
  */
-class Experiment extends \yii\db\ActiveRecord
+class ExperimentOld extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'experiment';
+        return 'experiment_old';
     }
 
     /**

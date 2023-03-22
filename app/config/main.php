@@ -47,14 +47,16 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'baseUrl' => getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/' : '',
             'rules' => [
                 '/' => 'site/index',
-                '/demo' => 'site/index'
+                '/demo' => 'site/index',
+                'upload-data' => 'upload/index'
             ],
         ],
         'assetManager' => [
             'basePath' => __DIR__ . '/../runtime/assets',
-            'baseUrl' => '/runtime/assets',
+            'baseUrl' =>  getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/runtime/assets' : '/runtime/assets',
         ],
         'user' => [
             'identityClass' => User::class,
@@ -95,6 +97,7 @@ $config = [
             'dsn' => getenv('DB_DSN'),
             'username' => getenv('DB_USER'),
             'password' => getenv('DB_PASS'),
+            'tablePrefix' => getenv('DB_PREFIX'),
         ],
         'authManager' => [
             'class' => yii\rbac\DbManager::class,
@@ -120,18 +123,18 @@ if (getenv('DEBUG')) {
         'class' => 'yii\gii\Module',
         'allowedIPs' => ['*'],
         'generators' => [
-            'cms_model' => [
-                'class' => \app\generators\model\Generator::class,
-                'templates' => [
-                    'cms_model' => '@app/generator/model/default',
-                ]
-            ],
-            'cms_crud' => [
-                'class' => \app\generators\crud\Generator::class,
-                'templates' => [
-                    'cms_crud' => '@app/generator/crud/default',
-                ]
-            ]
+//            'cms_model' => [
+//                'class' => \app\generators\model\Generator::class,
+//                'templates' => [
+//                    'cms_model' => '@app/generator/model/default',
+//                ]
+//            ],
+//            'cms_crud' => [
+//                'class' => \app\generators\crud\Generator::class,
+//                'templates' => [
+//                    'cms_crud' => '@app/generator/crud/default',
+//                ]
+//            ]
         ],
     ];
 }

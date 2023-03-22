@@ -32,7 +32,7 @@ class SiteController extends Controller
         $dataQuery = $dataProvider->query->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql;
         $index = strpos(strtolower($dataQuery), 'where') + strlen('where');
         $query = substr($dataQuery, $index);
-        $query = $query !== 'T * FROM `experiment`' ? $query : '1';
+        $query = $query !== 'T * FROM `experiment_old`' ? $query : '1';
 
         $data = $this->getDataFromQuery($query);
         $coords = $this->getCoordinates($data);
@@ -99,7 +99,7 @@ class SiteController extends Controller
 
     private function getDataFromQuery($query)
     {
-        return \app\models\Experiment::find()
+        return \app\models\ExperimentOld::find()
             ->select('age')
             ->where($query)
             ->orderBy('age desc')

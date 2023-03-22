@@ -1,6 +1,6 @@
 <?php
 
-use app\models\Experiment;
+use app\models\ExperimentOld;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\web\JsExpression;
@@ -87,7 +87,7 @@ JS
 //                        ],
 //                    ]),
                     'filter' => Html::activeDropDownList($searchModel, 'strain',
-                        Experiment::getStrains(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']), 
+                        ExperimentOld::getStrains(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']), 
                     'headerOptions' => ['style' => 'min-width:100px'],
                 ],
                 [
@@ -105,7 +105,7 @@ JS
                     'label' => 'Intervention',
                     'attribute' => 'drug_name',
                     'filter' => Html::activeDropDownList($searchModel, 'drug_name',
-                        Experiment::getDrugs(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+                        ExperimentOld::getDrugs(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'headerOptions' => ['style' => 'min-width:150px'],
                 ],
                 [
@@ -139,7 +139,7 @@ JS
                 [
                     'attribute' => 'source',
                     'filter' => Html::activeDropDownList($searchModel, 'source',
-                        Experiment::getSources(),
+                        ExperimentOld::getSources(),
                         ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'headerOptions' => ['style' => 'min-width:250px'],
                 ],
