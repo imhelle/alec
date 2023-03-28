@@ -33,14 +33,9 @@ class UploadController extends Controller
                 $model->setExperimentFiles(UploadedFile::getInstances($model, 'files'));
                 if ($model->validate()) {
                     $model->importToDb();
-//                    foreach ($model->files as $file) {
-//                        $data = Excel::import($file->tempName, [
-//                            'setFirstRecordAsKeys' => false
-//                        ]);
-//                    }
                 }
             } catch (\Exception $e) {
-                return json_encode(['error' => $e->getMessage()]);
+                return ['error' => $e->getMessage() . PHP_EOL . $e->getTraceAsString()];
             }
         }
 //        var_dump($model->errors);

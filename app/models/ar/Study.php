@@ -8,19 +8,17 @@ use Yii;
  * This is the model class for table "study".
  *
  * @property int $id
- * @property string|null $email
  * @property string|null $journal
- * @property string|null $authors
- * @property int|null $year
  * @property string|null $doi
- * @property string|null $pmid
- * @property int|null $taxonomy_id
- * @property int|null $strain_id
- * @property string|null $temperature_unit
- * @property string|null $age_unit
+ * @property string|null $pubmed_id -1 if not found
+ * @property string|null $full_text_URL for free articles
+ * @property string|null $email submitter's email
+ * @property string|null $authors authors names separated by comma
+ * @property int|null $year
  * @property string|null $remarks
+ * @property string|null $timestamp
  *
- * @property Experiment[] $experiments
+ * @property Cohort[] $cohorts
  */
 class Study extends \yii\db\ActiveRecord
 {
@@ -38,9 +36,10 @@ class Study extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['year', 'taxonomy_id', 'strain_id'], 'integer'],
+            [['year'], 'integer'],
             [['remarks'], 'string'],
-            [['email', 'journal', 'authors', 'doi', 'pmid', 'temperature_unit', 'age_unit'], 'string', 'max' => 255],
+            [['timestamp'], 'safe'],
+            [['journal', 'doi', 'pubmed_id', 'full_text_URL', 'email', 'authors'], 'string', 'max' => 255],
         ];
     }
 
@@ -51,28 +50,26 @@ class Study extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'email' => Yii::t('app', 'Email'),
             'journal' => Yii::t('app', 'Journal'),
+            'doi' => Yii::t('app', 'Doi'),
+            'pubmed_id' => Yii::t('app', 'Pubmed ID'),
+            'full_text_URL' => Yii::t('app', 'Full Text Url'),
+            'email' => Yii::t('app', 'Email'),
             'authors' => Yii::t('app', 'Authors'),
             'year' => Yii::t('app', 'Year'),
-            'doi' => Yii::t('app', 'Doi'),
-            'pmid' => Yii::t('app', 'Pmid'),
-            'taxonomy_id' => Yii::t('app', 'Taxonomy ID'),
-            'strain_id' => Yii::t('app', 'Strain ID'),
-            'temperature_unit' => Yii::t('app', 'Temperature Unit'),
-            'age_unit' => Yii::t('app', 'Age Unit'),
             'remarks' => Yii::t('app', 'Remarks'),
+            'timestamp' => Yii::t('app', 'Timestamp'),
         ];
     }
 
     /**
-     * Gets query for [[Experiments]].
+     * Gets query for [[Cohorts]].
      *
-     * @return \yii\db\ActiveQuery|ExperimentQuery
+     * @return \yii\db\ActiveQuery|CohortQuery
      */
-    public function getExperiments()
+    public function getCohorts()
     {
-        return $this->hasMany(Experiment::className(), ['study_id' => 'id']);
+        return $this->hasMany(Cohort::className(), ['study_id' => 'id']);
     }
 
     /**

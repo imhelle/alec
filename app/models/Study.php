@@ -2,35 +2,15 @@
 
 namespace app\models;
 
-use app\models\ar\Experiment;
-use app\models\ar\ExperimentQuery;
-use app\models\ar\StudyQuery;
 use Yii;
+use yii\web\UploadedFile;
 
-/**
- * This is the model class for table "study".
- *
- * @property int $id
- * @property string|null $email
- * @property string|null $journal
- * @property string|null $authors
- * @property int|null $year
- * @property string|null $doi
- * @property string|null $pmid
- * @property int|null $taxonomy_id
- * @property int|null $strain_id
- * @property string|null $temperature_unit
- * @property string|null $age_unit
- * @property string|null $remarks
- *
- * @property Experiment[] $experiments
- */
 class Study extends \app\models\ar\Study
 {
     public function loadFromXLSX($xlsxArray)
     {
         if ($xlsxArray[0] == 'email') {
-            $this->email = $xlsxArray[0]['B']
+            $this->email = $xlsxArray[0]['B'];
         }
     }
         public function attributeLabels()
@@ -39,6 +19,30 @@ class Study extends \app\models\ar\Study
             'doi' => Yii::t('app', 'DOI'),
             'pmid' => Yii::t('app', 'PMID'),
         ];
+    }
+    
+    public static function getRecordByData($data)
+    {
+        $model = self::find()->where(['or', 
+            ['pubmed_id' => UploadedData::getRowValue('PMID', $data)],
+            ['doi' => UploadedData::getRowValue('DOI', $data)],
+            ])->one();
+        if (!$model) {
+            $model = new self();
+            $model->journal = UploadedData::getRowValue('Journal', $data);
+            $model->doi = UploadedData::getRowValue('DOI', $data);
+            $model->pubmed_id = (string)UploadedData::getRowValue('PMID', $data);
+            $model->full_text_URL = null;
+            $model->email = UploadedData::getRowValue('Email', $data);
+            $model->authors = UploadedData::getRowValue('Authors', $data);
+            $model->year = UploadedData::getRowValue('Year', $data);
+            $model->remarks = UploadedData::getRowValue('Remarks', $data);
+            $model->timestamp = date('Y-m-d H:i:s');
+            if (!$model->save()) {
+                return json_encode($model->errors);
+            }
+        }
+        return $model;
     }
 
 }

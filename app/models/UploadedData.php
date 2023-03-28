@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use moonland\phpexcel\Excel;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\web\UploadedFile;
@@ -39,7 +40,7 @@ class UploadedData extends Model
     public function setExperimentFiles($files)
     {
         if (!$files) {
-            throw new InvalidArgumentException('Upload error');
+            throw new InvalidArgumentException('Upload error, no files uploaded');
         }
         foreach ($files as $file) {
             $fileNumber = $this->getFileNumber($file);
@@ -85,10 +86,33 @@ class UploadedData extends Model
     
     public function importToDb()
     {
-        foreach ($this->experimentFiles as $file) {
-            $experiment = new Cohort();
-            $experiment->loadFromFile($file);
+        $studyData = Excel::import($this->studyFile->tempName, [
+            'setFirstRecordAsKeys' => false
+        ]);
+        $study = Study::getRecordByData($studyData);
+        foreach ($this->experimentFiles as $number => $file) {
+//            echo json_encode(['message' => count($this->experimentFiles)]);
+            $cohortData = Excel::import($file->tempName, [
+                'setFirstRecordAsKeys' => false
+            ]);
+            $cohort = Cohort::saveFromData($cohortData, $study->id);
+            
+            $lifespanFile = $this->lifespanFiles[$number];
+            $lifespanData = Excel::import($lifespanFile->tempName, [
+                'setFirstRecordAsKeys' => false
+            ]);
+            Lifespan::saveMultipleFromData($lifespanData, $cohort->id);
         }
+    }
+    
+    public static function getRowValue($row, $data)
+    {
+        foreach ($data as $item) {
+            if (stripos($item['A'], $row) === 0) {
+                return $item['B'];
+            }
+        }
+        return null;
     }
 }
 
