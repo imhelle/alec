@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use app\models\Cohort;
 use app\models\common\LoginForm;
 use app\models\common\PasswordResetRequestForm;
 use app\models\common\ResetPasswordForm;
 use app\models\common\SignupForm;
 use app\models\ExperimentSearch;
+use app\models\Lifespan;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\filters\VerbFilter;
@@ -26,27 +28,27 @@ class SiteController extends Controller
     {
         $allControlsCoordinates = $this->getCoordinates($this->getDataFromQuery('`group` in ("Nodrug", "Controls")'));
         $allDrugCoordinates = $this->getCoordinates($this->getDataFromQuery('`group`="Drug"'));
-
-        $searchModel = new ExperimentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataQuery = $dataProvider->query->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql;
-        $index = strpos(strtolower($dataQuery), 'where') + strlen('where');
-        $query = substr($dataQuery, $index);
-        $query = $query !== 'T * FROM `experiment_old`' ? $query : '1';
-
-        $data = $this->getDataFromQuery($query);
+        
+        $cohortSearchModel = new Cohort();
+        $cohortDataProvider = $cohortSearchModel->search(Yii::$app->request->queryParams);
+        $cohortDataQuery = $cohortDataProvider->query->prepare(Yii::$app->db->queryBuilder)->createCommand()->rawSql;
+        $cohortIndex = strpos(strtolower($cohortDataQuery), 'where') + strlen('where');
+        $cohortQuery = substr($cohortDataQuery, $cohortIndex);
+        $cohortQuery = stripos($cohortQuery, 'where') !== false ? $cohortQuery : '1'; //!== 'T * FROM `' . getenv('DB_PREFIX') . 'cohort`' ? $cohortQuery : '1';
+        
+        $data = $this->getDataFromCohortQuery($cohortQuery);
         $coords = $this->getCoordinates($data);
         $median = $this->getMedian($data);
-        $total = $searchModel::find()->count();
+        $total = Lifespan::getActiveCount();
 
         if (Yii::$app->request->isAjax && isset(Yii::$app->request->queryParams['getCoords']) && Yii::$app->request->queryParams['getCoords'] == 1) {
-            $label = $this->buildLabel($query);
+            $label = $this->buildLabel($cohortQuery);
             return (json_encode(['label' => $label, 'coords' => $coords, 'median' => $median]));
         }
 
         if (isset(Yii::$app->request->queryParams['getFile']) && Yii::$app->request->queryParams['getFile'] == 1) {
 //            $label = str_replace([',', ' '], '_', $this->buildLabel($query));
-            $label = preg_replace("/[^A-Za-z0-9]+/", '_', $this->buildLabel($query));
+            $label = preg_replace("/[^A-Za-z0-9]+/", '_', $this->buildLabel($cohortQuery));
             $file = fopen('php://memory', 'w');
             foreach ($data as $line) {
                 fputcsv($file, [$line]);
@@ -63,8 +65,8 @@ class SiteController extends Controller
         return $this->render('index', [
             'allControlsCoordinates' => $allControlsCoordinates,
             'allDrugCoordinates' => $allDrugCoordinates,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'cohortSearchModel' => $cohortSearchModel,
+            'cohortDataProvider' => $cohortDataProvider,
             'median' => $median,
             'total' => $total,
         ]);
@@ -101,6 +103,19 @@ class SiteController extends Controller
     {
         return \app\models\ExperimentOld::find()
             ->select('age')
+            ->where($query)
+            ->orderBy('age desc')
+            ->column();
+    }
+
+    private function getDataFromCohortQuery($query): array
+    {
+//        var_dump($query); die;
+        return \app\models\Cohort::find()
+            ->innerJoin('{{%lifespan}}', '{{%lifespan}}.cohort_id={{%cohort}}.id')
+            ->innerJoin('{{%strain}}', '{{%cohort}}.strain_id={{%strain}}.id')
+            ->innerJoin('{{%active_substance}}', '{{%cohort}}.active_substance_id={{%active_substance}}.id')
+            ->select('{{%lifespan}}.age')
             ->where($query)
             ->orderBy('age desc')
             ->column();

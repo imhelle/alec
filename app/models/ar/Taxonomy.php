@@ -20,7 +20,7 @@ class Taxonomy extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'taxonomy';
+        return '{{%taxonomy}}';
     }
 
     /**

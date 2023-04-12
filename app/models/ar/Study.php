@@ -27,7 +27,7 @@ class Study extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'study';
+        return '{{%study}}';
     }
 
     /**

@@ -45,6 +45,7 @@ class m230222_162322_experiment extends Migration
             'cohort_size' => $this->integer(),
             'taxonomy_id' => $this->integer(),
             'strain_id' => $this->integer(),
+            'site' => $this->string()->comment('place of the experiment'),
             'sex' => $this->string(),
             'age_of_start' => $this->float()->comment('age at start of treatment'),
             'smoothed_lifespan_last_decile_age' => $this->float()->comment('10% of the animals are alive for smoothed survival curve'),
@@ -60,6 +61,7 @@ class m230222_162322_experiment extends Migration
             'age_unit' => $this->string(),
             'remarks' => $this->text(),
             'health_parameters' => $this->text()->comment('names of health parameters (filled in individual_lifespans), separated by commas'),
+            'year' => $this->integer()->comment('year of birth of the cohort'),
             'timestamp' => $this->timestamp(),
         ]);
 
@@ -105,12 +107,13 @@ class m230222_162322_experiment extends Migration
         $this->dropForeignKey('cohort_dwelling', '{{%cohort}}');
         $this->dropForeignKey('lifespan_cohort', '{{%lifespan}}');
         
-        $this->dropTable('{{lifespan}}');
-        $this->dropTable('{{study}}');
+        $this->dropTable('{{%lifespan}}');
+        $this->dropTable('{{%study}}');
         $this->dropTable('{{%cohort}}');
         $this->dropTable('{{%active_substance}}');
         $this->dropTable('{{%strain}}');
         $this->dropTable('{{%taxonomy}}');
+        $this->dropTable('{{%dwelling_type}}');
 
         return true;
     }

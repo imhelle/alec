@@ -20,7 +20,7 @@ class ActiveSubstance extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'active_substance';
+        return '{{%active_substance}}';
     }
 
     /**

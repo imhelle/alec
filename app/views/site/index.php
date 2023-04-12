@@ -15,8 +15,10 @@ use dosamigos\chartjs\ChartJs;
 /* @var $rapaCoordinates */
 /* @var $median */
 /* @var $total */
-/* @var $searchModel app\models\ExperimentSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+///* @var $searchModel app\models\ExperimentSearch */
+///* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $cohortSearchModel app\models\Cohort */
+/* @var $cohortDataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Animal Life Expectancy Comparisons';
 $this->params['breadcrumbs'][] = $this->title;
@@ -55,9 +57,100 @@ JS
 
         <?php Pjax::begin(); ?>
 
+<!--        --><?php //GridView::widget([
+//            'dataProvider' => $dataProvider,
+//            'filterModel' => $searchModel,
+//            'summary' => "{totalCount} records selected (out of {$total} total), {$median} median lifespan - 
+//                <button type='button'  id='add_data' class='btn btn-blue'>Plot</button>
+//                <button type='button'  id='download' class='btn btn-blue'>Download CSV</button>",
+//            'layout' => "<div style='float: left'>{summary}<a href ='/'><button type='reset' class='btn' style='margin-left: 10px; color: #000'>Reset Filters</button></a>
+//                <button type='button' id='clear_data' class='btn' style='margin-left: 10px;'>Clear Charts</button></div>\n{items}",
+//            'columns' => [
+//
+////            'id',
+////            'umn',
+//                [
+//                    'label' => 'Strain',
+//                    'attribute' => 'strain',
+////                    'filter' => \kartik\select2\Select2::widget([
+////                        'name' => 'ExperimentSearch[selectedStrains]',
+////                        'value' => $searchModel->selectedStrains,
+////                        'data' => ['Any' => 'Any'] + Experiment::getStrains(),
+////                        'theme' => \kartik\select2\Select2::THEME_BOOTSTRAP,
+////                        'options' => [
+////                                'multiple' => true,
+////                            'value' => $searchModel->selectedStrains,
+////                            'placeholder' => 'Any'
+////                        ],
+////                        'pluginOptions' => [
+////                            'allowClear' => true,
+////                            'placeholder' => 'Any',
+////                            'debug' => true
+////                        ],
+////                    ]),
+//                    'filter' => Html::activeDropDownList($searchModel, 'strain',
+//                        ExperimentOld::getStrains(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']), 
+//                    'headerOptions' => ['style' => 'min-width:100px'],
+//                ],
+//                [
+//                    'label' => 'Sex',
+//                    'attribute' => 'sex',
+//                    'filter' => Html::activeDropDownList($searchModel, 'sex',
+//                        [0 => "Female", 1 => "Male"], ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+//                    'value' => function ($model) {
+//                        /** \app\models\Experiment $model */
+//                        return $model->sex == 1 ? 'Male' : 'Female';
+//                    },
+//                    'headerOptions' => ['style' => 'min-width:100px'],
+//                ],
+//                [
+//                    'label' => 'Intervention',
+//                    'attribute' => 'drug_name',
+//                    'filter' => Html::activeDropDownList($searchModel, 'drug_name',
+//                        ExperimentOld::getDrugs(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+//                    'headerOptions' => ['style' => 'min-width:150px'],
+//                ],
+//                [
+//                    'attribute' => 'age',
+//                    'headerOptions' => ['style' => 'width:100px'],
+//                ],
+//                [
+//                    'attribute' => 'year',
+//                    'headerOptions' => ['style' => 'width:100px'],
+//                ],
+//                [
+//                    'label' => 'Site',
+//                    'attribute' => 'site',
+//                    'filter' => Html::activeDropDownList($searchModel, 'site',
+//                        ["TJL" => "The Jackson Laboratory", "UM" => "University of Michigan at Ann Arbor", "UT" => "University of Texas Health Science Center"],
+//                        ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+//                    'value' => function ($model) {
+//                        /** \app\models\Experiment $model */
+//                        switch ($model->site) {
+//                            case "TJL":
+//                                return "The Jackson Laboratory";
+//                            case "UM":
+//                                return "University of Michigan at Ann Arbor";
+//                            case "UT":
+//                                return "University of Texas Health Science Center";
+//                        }
+//                        return '';
+//                    },
+//                    'headerOptions' => ['style' => 'min-width:250px'],
+//                ],
+//                [
+//                    'attribute' => 'source',
+//                    'filter' => Html::activeDropDownList($searchModel, 'source',
+//                        ExperimentOld::getSources(),
+//                        ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+//                    'headerOptions' => ['style' => 'min-width:250px'],
+//                ],
+//            ],
+//        ]); ?>
+
         <?= GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
+            'dataProvider' => $cohortDataProvider,
+            'filterModel' => $cohortSearchModel,
             'summary' => "{totalCount} records selected (out of {$total} total), {$median} median lifespan - 
                 <button type='button'  id='add_data' class='btn btn-blue'>Plot</button>
                 <button type='button'  id='download' class='btn btn-blue'>Download CSV</button>",
@@ -69,7 +162,7 @@ JS
 //            'umn',
                 [
                     'label' => 'Strain',
-                    'attribute' => 'strain',
+                    'attribute' => 'strain.name',
 //                    'filter' => \kartik\select2\Select2::widget([
 //                        'name' => 'ExperimentSearch[selectedStrains]',
 //                        'value' => $searchModel->selectedStrains,
@@ -86,40 +179,39 @@ JS
 //                            'debug' => true
 //                        ],
 //                    ]),
-                    'filter' => Html::activeDropDownList($searchModel, 'strain',
-                        ExperimentOld::getStrains(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']), 
+                    'filter' => Html::activeDropDownList($cohortSearchModel, 'strain_id',
+                        \app\models\Strain::getList(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'headerOptions' => ['style' => 'min-width:100px'],
                 ],
                 [
                     'label' => 'Sex',
                     'attribute' => 'sex',
-                    'filter' => Html::activeDropDownList($searchModel, 'sex',
-                        [0 => "Female", 1 => "Male"], ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
-                    'value' => function ($model) {
-                        /** \app\models\Experiment $model */
-                        return $model->sex == 1 ? 'Male' : 'Female';
-                    },
+                    'filter' => Html::activeDropDownList($cohortSearchModel, 'sex',
+                        ['female' => "female", 'male' => "male"], ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'headerOptions' => ['style' => 'min-width:100px'],
                 ],
+//                [
+//                    'label' => 'Intervention',
+//                    'attribute' => 'drug_name',
+//                    'filter' => Html::activeDropDownList($searchModel, 'drug_name',
+//                        ExperimentOld::getDrugs(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+//                    'headerOptions' => ['style' => 'min-width:150px'],
+//                ],
+//                [
+//                    'attribute' => 'age',
+//                    'headerOptions' => ['style' => 'width:100px'], // todo max, med
+//                ],
                 [
-                    'label' => 'Intervention',
-                    'attribute' => 'drug_name',
-                    'filter' => Html::activeDropDownList($searchModel, 'drug_name',
-                        ExperimentOld::getDrugs(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
-                    'headerOptions' => ['style' => 'min-width:150px'],
-                ],
-                [
-                    'attribute' => 'age',
-                    'headerOptions' => ['style' => 'width:100px'],
-                ],
-                [
-                    'attribute' => 'year',
-                    'headerOptions' => ['style' => 'width:100px'],
+                    'label' => 'Active substance',
+                    'attribute' => 'activeSubstance.name',
+                    'filter' => Html::activeDropDownList($cohortSearchModel, 'active_substance_id',
+                        \app\models\ActiveSubstance::getList(), ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
+                    'headerOptions' => ['style' => 'min-width:100px'],
                 ],
                 [
                     'label' => 'Site',
                     'attribute' => 'site',
-                    'filter' => Html::activeDropDownList($searchModel, 'site',
+                    'filter' => Html::activeDropDownList($cohortSearchModel, 'site',
                         ["TJL" => "The Jackson Laboratory", "UM" => "University of Michigan at Ann Arbor", "UT" => "University of Texas Health Science Center"],
                         ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'value' => function ($model) {
@@ -134,13 +226,6 @@ JS
                         }
                         return '';
                     },
-                    'headerOptions' => ['style' => 'min-width:250px'],
-                ],
-                [
-                    'attribute' => 'source',
-                    'filter' => Html::activeDropDownList($searchModel, 'source',
-                        ExperimentOld::getSources(),
-                        ['prompt' => 'Any' . PHP_EOL, 'class' => 'form-control']),
                     'headerOptions' => ['style' => 'min-width:250px'],
                 ],
             ],

@@ -31,10 +31,10 @@ PHP_IMAGE_ALTER=""
 [ "$XDEBUG" != "" ] && PHP_IMAGE_ALTER="-xdebug" && echo "Using alternative PHP container image php$PHP_IMAGE_ALTER"
 
 
-if [ "$COMPOSE_ARGS" = "up " ]
-then 
-	COMPOSE_ARGS="up -d"
-fi
+#if [ "$COMPOSE_ARGS" = "up " ]
+#then 
+#	COMPOSE_ARGS="up -d"
+#fi
 
 mkdir -p ../alec-logs ../alec-mysql ./app/runtime/assets
 
