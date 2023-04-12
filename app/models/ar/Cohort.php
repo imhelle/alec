@@ -16,6 +16,7 @@ use Yii;
  * @property int|null $cohort_size
  * @property int|null $taxonomy_id
  * @property int|null $strain_id
+ * @property string|null $site place of the experiment
  * @property string|null $sex
  * @property float|null $age_of_start age at start of treatment
  * @property float|null $smoothed_lifespan_last_decile_age 10% of the animals are alive for smoothed survival curve
@@ -24,6 +25,7 @@ use Yii;
  * @property string|null $diet_description
  * @property string|null $type_of_experiment drug / genetic / diet / other
  * @property int|null $active_substance_id
+ * @property int|null $year
  * @property string|null $dosage including units and timeliness. Examples of timeliness to favor a common language: once initially, every other week, continuously
  * @property string|null $vehicle
  * @property string|null $diet_intervention_description
@@ -47,7 +49,7 @@ class Cohort extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cohort';
+        return '{{%cohort}}';
     }
 
     /**
@@ -57,10 +59,10 @@ class Cohort extends \yii\db\ActiveRecord
     {
         return [
             [['study_id', 'dwelling_id', 'animals_per_dwelling', 'control', 'cohort_size', 'taxonomy_id', 'strain_id', 'active_substance_id'], 'integer'],
-            [['age_of_start', 'smoothed_lifespan_last_decile_age', 'smoothed_lifespan_median_age'], 'number'],
-            [['remarks', 'health_parameters'], 'string'],
-            [['timestamp'], 'safe'],
-            [['temperature', 'sex', 'light_conditions', 'diet_description', 'type_of_experiment', 'dosage', 'vehicle', 'diet_intervention_description', 'temperature_unit', 'age_unit'], 'string', 'max' => 255],
+            [['age_of_start', 'year', 'smoothed_lifespan_last_decile_age', 'smoothed_lifespan_median_age'], 'number'],
+            [['diet_description', 'diet_intervention_description', 'remarks', 'health_parameters'], 'string'],
+            [['timestamp', 'study'], 'safe'],
+            [['temperature', 'site', 'sex', 'light_conditions', 'type_of_experiment', 'dosage', 'vehicle', 'temperature_unit', 'age_unit'], 'string', 'max' => 255],
             [['active_substance_id'], 'exist', 'skipOnError' => true, 'targetClass' => ActiveSubstance::className(), 'targetAttribute' => ['active_substance_id' => 'id']],
             [['dwelling_id'], 'exist', 'skipOnError' => true, 'targetClass' => DwellingType::className(), 'targetAttribute' => ['dwelling_id' => 'id']],
             [['strain_id'], 'exist', 'skipOnError' => true, 'targetClass' => Strain::className(), 'targetAttribute' => ['strain_id' => 'id']],
@@ -84,6 +86,7 @@ class Cohort extends \yii\db\ActiveRecord
             'cohort_size' => Yii::t('app', 'Cohort Size'),
             'taxonomy_id' => Yii::t('app', 'Taxonomy ID'),
             'strain_id' => Yii::t('app', 'Strain ID'),
+            'site' => Yii::t('app', 'Site'),
             'sex' => Yii::t('app', 'Sex'),
             'age_of_start' => Yii::t('app', 'Age Of Start'),
             'smoothed_lifespan_last_decile_age' => Yii::t('app', 'Smoothed Lifespan Last Decile Age'),

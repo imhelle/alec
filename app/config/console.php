@@ -22,6 +22,7 @@ $config = [
             'dsn' => getenv('DB_DSN'),
             'username' => getenv('DB_USER'),
             'password' => getenv('DB_PASS'),
+            'tablePrefix' => getenv('DB_PREFIX'),
         ],
         'authManager' => [
             'class' => yii\rbac\DbManager::class,

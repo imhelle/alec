@@ -20,7 +20,7 @@ class Strain extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'strain';
+        return '{{%strain}}';
     }
 
     /**

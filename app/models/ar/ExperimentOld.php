@@ -25,7 +25,7 @@ class ExperimentOld extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'experiment_old';
+        return '{{%experiment_old}}';
     }
 
     /**
