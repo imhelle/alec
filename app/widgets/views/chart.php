@@ -1,8 +1,11 @@
 <?php
 /** @var $allDrugCoordinates array */
 /** @var $allControlsCoordinates array */
+/** @var $datasets array */
 
 use yii\web\JsExpression;
+
+
 
 echo \dosamigos\chartjs\ChartJs::widget([
     'type' => 'line',
@@ -103,55 +106,13 @@ echo \dosamigos\chartjs\ChartJs::widget([
         'animation' => false
     ],
     'data' => [
-        'datasets' => [
-            [
-                'label' => 'special_median_line',
-                'backgroundColor' => "rgba(198, 93, 87, 0)",
-                'borderColor' => "rgba(198, 198, 198, 1)",
-                'pointBackgroundColor' => "rgba(198, 198, 198, 1)",
-                'pointBorderWidth' => 0,
-                'pointRadius' => 1,
-                'pointHoverRadius' => 4,
-                'pointHoverBackgroundColor' => "#fff",
-                'pointHoverBorderColor' => "rgba(198, 198, 198, 1)",
-                'data' => [['x' => 0, 'y' => 50], ['x' => 1600, 'y' => 50]],
-                'borderDash' => [5, 5],
-                'borderWidth' => 1,
-                'steppedLine' => true,
-            ],
-            [
-                'label' => "All Controls",
-                'backgroundColor' => "rgba(125, 201, 209, 0)",
-                'borderColor' => "rgba(125, 201, 209, 1)",
-                'pointBackgroundColor' => "rgba(125, 201, 209, 1)",
-                'pointBorderWidth' => 0,
-                'pointRadius' => 1,
-                'pointHoverRadius' => 4,
-                'pointHoverBackgroundColor' => "#fff",
-                'pointHoverBorderColor' => "rgba(125, 201, 209, 1)",
-                'data' => $allControlsCoordinates,
-                'steppedLine' => true,
-            ],
-            [
-                'label' => "All Drugs",
-                'backgroundColor' => "rgba(198, 93, 87, 0)",
-                'borderColor' => "rgba(198, 93, 87, 1)",
-                'pointBackgroundColor' => "rgba(198, 93, 87, 1)",
-                'pointBorderWidth' => 0,
-                'pointRadius' => 1,
-                'pointHoverRadius' => 4,
-                'pointHoverBackgroundColor' => "#fff",
-                'pointHoverBorderColor' => "rgba(198, 93, 87, 1)",
-                'data' => $allDrugCoordinates,
-                'steppedLine' => true,
-            ],
-
-        ]
+        'datasets' => $datasets
     ]
 ]);
 
 
 $this->registerJs(
+/** @lang js */
 <<<JS
 // $('#js-legend').html(chartJS_alecChart.generateLegend());
 chartJS_alecChart.options.legendCallback = function(chart){
@@ -177,35 +138,7 @@ function shuffle (arr) {
     return arr;
 }
  let palette = shuffle(['#307691', '#5b75ad', '#8674c8', '#b072e4', '#db71ff', '#e48edd', '#edacbb', '#f6c998', '#ffe676', '#dfd098', '#9ea5dd', '#7e8fff', '#84abfa', '#8ac7f5', '#90e3ef', '#96ffea', '#b0e0cf', '#cac0b4', '#e3a198', '#67bb9f', '#8db077', '#b3a650', '#d99c28', '#ff9200', '#ea842d', '#d5775b', '#c06a88', '#ac5cb5', '#974fe2', '#ff9f1c', '#8593f4', '#7ac0ff', '#8eaacc', '#a29499', '#b67f66', '#ca6933', '#de5300']);
-console.log(palette)
- let colors = [
-        [11, 181, 255],
-        [10, 201, 43],
-        [125, 38, 205],
-        [139, 117, 0],
-        [205, 105, 201],
-        [205, 181, 205],
-        [229, 188, 59],
-        [108, 166, 205],
-        [255,99,71],
-        [255,160,122],
-        [50,205,50],
-        [123,104,238],
-        [221,160,221],
-        [219,112,147],
-        [244,164,96],
-        [188,143,143],
-        [199,21,133],
-        [32,178,170],
-        [189,183,107],
-        [255,215,0],
-        [143,188,143],
-        [0,206,209],
-        [0,0,139],
-        [0,0,139],
-        [139,0,139],
-    ]
-    
+     
     function drawChart(data) 
     {
         color = palette[chartJS_alecChart.data.datasets.length];
@@ -225,6 +158,7 @@ console.log(palette)
             }
             chartJS_alecChart.data.datasets.push(newDataset);
             chartJS_alecChart.update();
+            
     }
     
     $(document).on('click', '#clear_data', function() {
@@ -262,9 +196,6 @@ console.log(palette)
         /** @var chartJS_alecChart */
         let chartCanvas = $('#alecChart')
         chartCanvas.css('opacity', '0.5');
-        
-        console.log(chartJS_alecChart)
-        console.log(window.location.href)
 
         let parameter = (window.location.href.indexOf("?") > -1) ? '&getCoords=1' : '?getCoords=1'
         $.get(window.location.href + parameter, function(data, status){
@@ -272,11 +203,12 @@ console.log(palette)
             drawChart(data);
         });
         chartCanvas.css('opacity', '1')
+        $("#save-link").addClass('create').removeClass('copy')
+            .find( 'span' ).html('<span>Save link</span>')
     });
     
     $(document).on('click', '#clear_strains', function() {
     
-        console.log(window.location.href)
         var url = new URL(window.location.href);
         var params = new URLSearchParams(decodeURI(url.search));
         console.log(url)
@@ -287,8 +219,46 @@ console.log(palette)
     
     $(document).on('click', '#download', function() {
         let parameter = (window.location.href.indexOf("?") > -1) ? '&getFile=1' : '?getFile=1'
-        console.log(window.location.href)
         document.location = window.location.href + parameter;
+    });
+    
+    $(document).on('click', '#save-link.create', function() {
+        charts = chartJS_alecChart.data.datasets
+        url = window.location.href.split("/").pop();
+        let chartsToSave = [];
+        $.each( charts.slice(1), function( index, value ){
+                   
+            let newDataset = {
+                'label': value.label,
+                'backgroundColor': value.backgroundColor,
+                'borderColor': value.borderColor,
+                'pointBackgroundColor': value.pointBackgroundColor,
+                'pointBorderWidth': value.pointBorderWidth,
+                'pointRadius': value.pointRadius,
+                'pointHoverRadius': value.pointHoverRadius,
+                'pointHoverBackgroundColor': value.pointHoverBackgroundColor,
+                'pointHoverBorderColor': value.pointHoverBorderColor,
+                'data': value.data,
+                'steppedLine': value.steppedLine,
+                'hidden':chartJS_alecChart.legend.legendItems[index].hidden
+            }
+            chartsToSave.push(newDataset);
+        });
+        
+        console.log(chartsToSave);
+
+        $.post( "/site/save-link", {charts: JSON.stringify(chartsToSave), url: url} , function(data) {
+        $("#save-link").addClass('copy').removeClass('create');
+        data = JSON.parse(data)
+        fullLink = location.protocol + '//'+window.location.host+'/chart/'+data.link;
+         $("#save-link").find( 'span' ).html('<span class="action">Copy link:</span> <span class="link">'+fullLink+'</span>')
+         }, false);
+
+    });
+    
+    $(document).on('click', '#save-link.copy', function() {
+        navigator.clipboard.writeText($(this).find('span.link').text());
+        $(this).find('span.action').text('Copied')
     });
     
     $(document).on('change', '#upload_field', async function() {
@@ -301,7 +271,6 @@ console.log(palette)
     
             success: function(response) {
                 data = JSON.parse(response)
-                console.log(data);
                 $("#upload_error").remove();
                 if (data.error) {
                     $('#uploadForm').append("<span id='upload_error'>"+data.error+"</span>")

@@ -17,6 +17,7 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
       - ./app:/var/www
       - ./../alec-logs:/var/log/nginx
+      - ./docker/nginx/proxy/certs:/etc/nginx/certs
     # link nginx container to php container
     links:
       - alec

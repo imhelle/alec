@@ -51,7 +51,8 @@ $config = [
             'rules' => [
                 '/' => 'site/index',
                 '/demo' => 'site/index',
-                'upload-data' => 'upload/index'
+                'upload-data' => 'upload/index',
+                'chart/<link:\w+>' => 'site/chart'
             ],
         ],
         'assetManager' => [
