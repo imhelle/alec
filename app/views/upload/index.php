@@ -4,7 +4,26 @@
 use app\models\UploadedData;
 use kartik\file\FileInput;
 use yii\helpers\Url;
+$assetsFormatPath = getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/assets/format/' : '/assets/format/';
+?>
 
+<p>
+This tool has been designed to help you easily upload your study meta-data in ALEC's format. Uploading your data will allow you to contribute to the growing database of valuable information on experiments and their results.
+</p>
+<p>
+To get started, please download the template and example data provided on this page. These resources will help you ensure that your data is formatted correctly.
+</p>
+<p>
+It is important to note that when uploading files for a particular study, all relevant files should be uploaded at once.
+</p>
+<p>
+    We greatly appreciate your contributions to the ALEC project and look forward to seeing your data added to our resource. If you have any questions or concerns, please don't hesitate to <a href="mailto:sp.olga.inf@gmail.com?subject=ALEC Uploading Tool" target="_blank">reach out to developer</a> for assistance.
+</p>
+<br>
+<a class="btn btn-blue" href="<?=$assetsFormatPath ?>example.zip">Example files ⇓</a>  <a class="btn btn-blue" href="<?=$assetsFormatPath ?>template.zip">Template files ⇓</a>
+<br>
+<br>
+<?php
 echo FileInput::widget([
     'model' => $model,
     'attribute' => 'files[]',
@@ -53,7 +72,21 @@ echo FileInput::widget([
 ]);
 
 ?>
-
+<br>
+<br>
+<p>
+    The data format has a hierarchical structure that is divided into two levels: study meta-data, then experiment meta-data coupled with raw lifespan data for it.
+</p>
+<p>
+    For each dataset, there is only one study description that defines parameters that are specific to the study and common to all experiments, such as the type of animal used and where to find more information about the study, like publication details and data submitter's identity.
+</p>
+<p>
+    If a dataset comprises multiple studies, it must be divided into multiple separate sets. Each study includes multiple experiments, typically consisting of at least one intervention and a coupled control experiment, but sometimes including more. The experiment-specific meta-data differentiates each experiment within the study from the others, such as the specific drug used or gene knockout, as well as providing auxiliary data descriptions. There could be a single experiment designed to gather statistical data on normal lifespans.
+</p>
+<p>
+    Each lifespan data file a set of numbers, one per line, each defining lifespan of a single individual.
+</p>
+<br>
 <style>
     div.wrap {
         margin-top: 90px;
