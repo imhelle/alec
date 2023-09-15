@@ -133,6 +133,18 @@ JS
                     'contentOptions' => ['style' => 'vertical-align: middle; text-align: center']
                 ],
                 [
+                    'label' => 'Temperature',
+                    'attribute' => 'temperature',
+                    'headerOptions' => ['style' => 'width:100px; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
+                ],
+                [
+                    'label' => 'Per dwell.',
+                    'attribute' => 'animals_per_dwelling',
+                    'headerOptions' => ['style' => 'width:100px; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
+                ],
+                [
                     'label' => 'Start age',
                     'attribute' => 'age_of_start',
                     'value' => function ($model) {
@@ -149,7 +161,7 @@ JS
                         return "<a href='https://doi.org/{$model->study->doi}' target='_blank'>PMID&nbsp;{$model->study->pubmed_id}</a> {$model->study->year}";
                     },
                     'format' => 'html',
-                    'headerOptions' => ['style' => 'min-width:155px; text-align: center'],
+                    'headerOptions' => ['style' => 'min-width:120px; text-align: center'],
                     'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
                 ],
                 [
