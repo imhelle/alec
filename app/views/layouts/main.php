@@ -53,6 +53,7 @@ $this->registerCssFile($css);
     <div class="container">
         <p class="pull-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?> 
             <br>Developed by Olga Spiridonova under supervision of <a href="https://scholar.google.com/citations?user=WMhS0lAAAAAJ" target="_blank">Leon Peshkin</a>
+            <br>Supported by a Longevity Impetus Grant from Norn Group to Olga Spiridonova
             <br>
             Data courtesy of <a href="https://www.nia.nih.gov/research/dab/interventions-testing-program-itp" target="_blank">ITP</a>
         </p>
