@@ -5,7 +5,7 @@
 
 use yii\web\JsExpression;
 
-
+$basePath = getenv('BASE_URL') ? '/' . getenv('BASE_URL') : '';
 
 echo \dosamigos\chartjs\ChartJs::widget([
     'type' => 'line',
@@ -247,10 +247,10 @@ function shuffle (arr) {
         
         console.log(chartsToSave);
 
-        $.post( "/site/save-link", {charts: JSON.stringify(chartsToSave), url: url} , function(data) {
+        $.post( "{$basePath}/site/save-link", {charts: JSON.stringify(chartsToSave), url: url} , function(data) {
         $("#save-link").addClass('copy').removeClass('create');
         data = JSON.parse(data)
-        fullLink = location.protocol + '//'+window.location.host+'/chart/'+data.link;
+        fullLink = location.protocol + '//'+window.location.host+'{$basePath}/chart/'+data.link;
          $("#save-link").find( 'span' ).html('<span class="action">Copy link:</span> <span class="link">'+fullLink+'</span>')
          }, false);
 
