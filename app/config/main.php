@@ -1,6 +1,6 @@
 <?php
 
-use app\models\common\User;
+use app\modules\contribute\models\User;
 
 $params = require __DIR__ . '/params.php';
 
@@ -18,7 +18,11 @@ $config = [
     'controllerNamespace' => 'app\controllers',
     'vendorPath' => '@app/vendor',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'contribute' => [
+            'class' => 'app\modules\contribute\Module',
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-alec',
@@ -60,16 +64,16 @@ $config = [
             'baseUrl' =>  getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/runtime/assets' : '/runtime/assets',
         ],
         'user' => [
-            'identityClass' => User::class,
+            'identityClass' => \app\modules\contribute\models\User::class,
             'enableAutoLogin' => true,
-            'loginUrl' => ['/cms/login'],
+            'loginUrl' => getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/login' : '/login',
             'identityCookie' => ['name' => '_identity-alec', 'httpOnly' => true],
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
+                'host' => getenv('SMTP_SERVER'),
                 'username' => getenv('SMTP_USER'),
                 'password' => getenv('SMTP_PASS'),
                 'port' => '587',

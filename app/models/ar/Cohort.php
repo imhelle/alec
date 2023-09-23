@@ -34,6 +34,8 @@ use Yii;
  * @property string|null $remarks
  * @property string|null $health_parameters names of health parameters (filled in individual_lifespans), separated by commas
  * @property string|null $timestamp
+ * @property string|null $source
+ * @property int|null $collida_id
  *
  * @property ActiveSubstance $activeSubstance
  * @property DwellingType $dwelling

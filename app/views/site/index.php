@@ -38,7 +38,7 @@ JS
 
 ?>
     <div class="experiment-index">
-        <?php $form = \yii\bootstrap\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'id' => 'uploadForm']]) ?>
+        <?php $form = \yii\bootstrap5\ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'id' => 'uploadForm']]) ?>
         <label class="custom-file-upload btn btn-blue">
             <?= Html::fileInput('upload', null, ['style' => 'display: none', 'id' => 'upload_field']) ?>
             <span id="file-selected">Upload CSV file</span><br>
@@ -46,7 +46,7 @@ JS
         <label id="save-link" class="custom-file-upload btn btn-blue create">
             <span>Save link</span><br>
         </label>
-        <?php \yii\bootstrap\ActiveForm::end(); ?>
+        <?php \yii\bootstrap5\ActiveForm::end(); ?>
         <?php
         echo \app\widgets\Chart::widget([
             'allControlsCoordinates' => $allControlsCoordinates,
@@ -71,7 +71,7 @@ JS
                 <button type='button'  id='add_data' class='btn btn-blue'>Plot</button>
                 <button type='button'  id='download' class='btn btn-blue'>Download CSV</button>",
             'layout' => "<div style='float: left'>{summary}<a href ='/'><button type='reset' class='btn' style='margin-left: 10px; color: #000'>Reset Filters</button></a>
-                <button type='button' id='clear_data' class='btn' style='margin-left: 10px;'>Clear Charts</button></div>\n{items}",
+                <button type='button' id='clear_data' class='btn btn-gray' style='margin-left: 10px;'>Clear Charts</button></div>\n{items}",
             'columns' => [
 
 //            'id',
@@ -139,7 +139,7 @@ JS
                     'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
                 ],
                 [
-                    'label' => 'Per dwell.',
+                    'label' => 'Density',
                     'attribute' => 'animals_per_dwelling',
                     'headerOptions' => ['style' => 'width:100px; text-align: center'],
                     'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],

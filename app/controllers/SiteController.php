@@ -5,8 +5,12 @@ namespace app\controllers;
 use app\infrastructure\ChartHelper;
 use app\models\Cohort;
 use app\models\SavedLink;
+use app\modules\contribute\models\LoginForm;
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -15,10 +19,68 @@ use yii\web\UploadedFile;
 class SiteController extends Controller
 {
 
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['logout'],
+                'rules' => [
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'logout' => ['post'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Login action.
+     *
+     * @return Response|string
+     */
+    public function actionLogin()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->goBack();
+        }
+
+        $model->password = '';
+        return $this->render('login', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Logout action.
+     *
+     * @return Response
+     */
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
+    }
+
+
     public function actionIndex()
     {
         $charts = [];
-        if (Yii::$app->request->queryParams['chart']) {
+        if (Yii::$app->request->getQueryParam('chart')) {
             $savedLink = SavedLink::find()->where(['link' => Yii::$app->request->queryParams['chart']])->one();
             if($savedLink && $savedLink->chart) {
                 $charts = json_decode($savedLink->chart, true);
@@ -75,7 +137,8 @@ class SiteController extends Controller
             return $this->redirect('/');
         }
         $operand = $savedLink->url ? '&' : '?';
-        return $this->redirect('/' . rtrim($savedLink->url, '/') . $operand . 'chart=' . $savedLink->link);
+        $baseUrl = getenv('BASE_URL') ? '/' . getenv('BASE_URL') : '';
+        return $this->redirect($baseUrl . '/'.rtrim($savedLink->url, '/') . $operand . 'chart=' . $savedLink->link);
     }
     
     

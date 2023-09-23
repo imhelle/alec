@@ -7,8 +7,8 @@
 use app\assets\CmsAsset;
 use app\widgets\Alert;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use yii\bootstrap5\Nav;
+use yii\bootstrap5\NavBar;
 use yii\widgets\Breadcrumbs;
 
 CmsAsset::register($this);
@@ -17,7 +17,7 @@ $this->registerCssFile($css);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html style="font-size: 14px" lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,9 +42,9 @@ $this->registerCssFile($css);
     ?>
 
     <div class="container content">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+<!--        --><?php //= Breadcrumbs::widget([
+//            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+//        ]) ?>
         <?= $content ?>
     </div>
 </div>

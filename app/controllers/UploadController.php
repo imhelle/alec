@@ -35,7 +35,8 @@ class UploadController extends Controller
                     $model->importToDb();
                 }
             } catch (\Exception $e) {
-                return ['error' => $e->getMessage() . PHP_EOL . $e->getTraceAsString()];
+                return ['error' => $e->getMessage() . PHP_EOL . $e->getTraceAsString()
+                ];
             }
         }
 //        var_dump($model->errors);

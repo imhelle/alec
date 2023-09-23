@@ -153,20 +153,22 @@ class Cohort extends ar\Cohort
 
     public static function buildLabel($query)
     {
+        
+        if ($query == " (`enabled`=1) AND (`active_substance_id` IS NULL)") {
+            return 'All controls';
+        }
         $label = trim(str_replace(['`', '%', '(', ')', '\''], '', $query));
         $label = str_replace([' AND '], ', ', $label);
         $label = str_replace([' LIKE '], '=', $label);
-        
-        preg_match('/strain_id=(\d+)/',$label,$strainMatches);
-        preg_match('/active_substance_id=(\d+)/',$label,$substanceMatches);
-        preg_match('/age_of_start=(\d+)/',$label,$startMatches);
-        preg_match('/year=(\d+)/',$label,$yearMatches);
-        preg_match('/sex=([^,]+)/',$label,$sexMatches);
-        preg_match('/site=([^,]+)/',$label,$siteMatches);
-        preg_match('/dosage=[^,]*(,|$)/',$label,$dosageMatches);
-        
-//        var_dump($label);
-        
+
+        preg_match('/strain_id=(\d+)/', $label, $strainMatches);
+        preg_match('/active_substance_id=(\d+)/', $label, $substanceMatches);
+        preg_match('/age_of_start=(\d+)/', $label, $startMatches);
+        preg_match('/year=(\d+)/', $label, $yearMatches);
+        preg_match('/sex=([^,]+)/', $label, $sexMatches);
+        preg_match('/site=([^,]+)/', $label, $siteMatches);
+        preg_match('/dosage=[^,]*(,|$)/', $label, $dosageMatches);
+
         $labelArray = [];
         if ($strainMatches) {
             $strainName = Strain::getName($strainMatches[1]);
@@ -175,11 +177,14 @@ class Cohort extends ar\Cohort
         if ($sexMatches) {
             $labelArray[] = ucfirst($sexMatches[1]);
         }
+        if (strpos($label, 'active_substance_id IS NULL') !== false) {
+            $labelArray[] = 'Control';
+        }
         if ($substanceMatches) {
             $substanceName = ActiveSubstance::getName($substanceMatches[1]);
             $labelArray[] = $substanceName;
         }
-        if($startMatches | $dosageMatches) {
+        if ($startMatches | $dosageMatches) {
             $cohorts = self::find()
                 ->where($query)
                 ->orderBy('age_of_start desc')

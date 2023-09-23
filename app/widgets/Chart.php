@@ -5,7 +5,7 @@ namespace app\widgets;
 use Yii;
 
 
-class Chart extends \yii\bootstrap\Widget
+class Chart extends \yii\bootstrap5\Widget
 {
     public $allControlsCoordinates = [];
     public $allDrugCoordinates = [];

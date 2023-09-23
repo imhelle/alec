@@ -65,6 +65,7 @@ class m230222_162322_experiment extends Migration
             'timestamp' => $this->timestamp(),
             'enabled' => $this->tinyInteger(1)->comment('is this cohort ready to be shown on the site'),
             'comment' => $this->string()->comment('any technical remarks'),
+            'source' => $this->string()->comment('source of the data'),
         ]);
 
         $this->createTable('{{%study}}', [
