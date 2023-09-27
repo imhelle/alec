@@ -21,7 +21,7 @@ use dosamigos\chartjs\ChartJs;
 /* @var $cohortSearchModel app\models\Cohort */
 /* @var $cohortDataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Animal Life Expectancy Comparisons';
+$this->title = 'ALEC mice - Animal Life Expectancy Comparisons in Mice';
 $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs(
     <<< JS

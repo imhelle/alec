@@ -22,6 +22,7 @@ class Cohort extends ar\Cohort
         $taxonomyId = Taxonomy::findOrCreateByName(UploadedData::getRowValue('Taxonomy name', $data))->id;
         $strainId = Strain::findOrCreateByNameAndTax(UploadedData::getRowValue('Strain', $data), $taxonomyId)->id;
         $activeSubstanceId = ActiveSubstance::findOrCreateByName(UploadedData::getRowValue('Active substance name', $data))->id;
+        $userId = \Yii::$app->user->getIsGuest() ? 'guest_' . \Yii::$app->request->userIP : \Yii::$app->user->id;
 
         $model = new self();
         $model->study_id = $studyId;
@@ -48,6 +49,7 @@ class Cohort extends ar\Cohort
         $model->remarks = trim(UploadedData::getRowValue('Remarks', $data));
         $model->health_parameters = null;
         $model->timestamp = date('Y-m-d H:i:s');
+        $model->user_id = $userId;
         if (!$model->save()) {
             var_dump($model->errors);
         }

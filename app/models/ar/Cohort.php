@@ -36,6 +36,7 @@ use Yii;
  * @property string|null $timestamp
  * @property string|null $source
  * @property int|null $collida_id
+ * @property int|null $user_id
  *
  * @property ActiveSubstance $activeSubstance
  * @property DwellingType $dwelling

@@ -88,8 +88,8 @@ echo FileInput::widget([
 </p>
 <br>
 <style>
-    div.wrap {
-        margin-top: 90px;
+    div.container.content {
+        margin-top: 40px;
     }
 
     .wrap .krajee-default .file-footer-caption {

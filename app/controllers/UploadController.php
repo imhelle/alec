@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\UploadedData;
 use moonland\phpexcel\Excel;
 use Yii;
+use yii\log\Logger;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -18,10 +19,12 @@ class UploadController extends Controller
     public function actionIndex(): string
     {
         $model = new UploadedData();
+
+        $this->view->title = 'ALEC - Animal Life Expectancy Comparisons';
         return $this->render('index', [
             'model' => $model,
-            
         ]);
+        
     }
     
     public function actionUpload()
@@ -35,11 +38,12 @@ class UploadController extends Controller
                     $model->importToDb();
                 }
             } catch (\Exception $e) {
-                return ['error' => $e->getMessage() . PHP_EOL . $e->getTraceAsString()
-                ];
+                
+                Yii::getLogger()->log($e->getMessage() . PHP_EOL . $e->getTraceAsString(), Logger::LEVEL_WARNING);
+                return ['error' => $e->getMessage()];
             }
         }
-//        var_dump($model->errors);
+        return [];
     }
 
 }

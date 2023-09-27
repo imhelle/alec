@@ -32,17 +32,23 @@ class UploadedData extends Model
     public function rules()
     {
         return [
-            [['files'], 'file', 'minFiles' => 3, 'maxFiles' => 0],
-            [['files'], 'filesCount'],
+            [['files'], 'file', 'minFiles' => 3, 'maxFiles' => 0], 
+//            ['verifyCode', 'captcha'],
         ];
     }
-    
-    public function setExperimentFiles($files)
+
+    /**
+     * @param UploadedFile[] $files
+     * @return void
+     */
+    public function setExperimentFiles(array $files)
     {
         if (!$files) {
             throw new InvalidArgumentException('Upload error, no files uploaded');
         }
+        $fileDir = $this->createDirectory();
         foreach ($files as $file) {
+            $file->saveAs($fileDir . '/' . $file->name, false); // save files anyway for debug
             $fileNumber = $this->getFileNumber($file);
             if (strpos($file->name, 'study') !== false) {
                 $this->studyFile = $file;
@@ -52,6 +58,15 @@ class UploadedData extends Model
                 $this->lifespanFiles[$fileNumber] = $file;
             }
         }
+        $this->checkFiles();
+    }
+    
+    private function createDirectory(): string
+    {
+        $userId = \Yii::$app->user->getIsGuest() ? 'guest_' . \Yii::$app->request->userIP : \Yii::$app->user->id;
+        $fileDir = rtrim(\Yii::getAlias('@app'), '/') . '/uploads/' . $userId . '/' . date('d_m_Y_') . time();
+        mkdir($fileDir, 0777, true);
+        return $fileDir;
     }
     
     private function getFileNumber(UploadedFile $file) {
@@ -65,20 +80,24 @@ class UploadedData extends Model
         return $fileNameArray[1];
     }
 
-    public function filesCount()
+    public function checkFiles()
     {
+//        if (!$this->files) {
+//            throw new InvalidArgumentException('Upload error, no files uploaded');
+//        }
+//        var_dump($this->studyFile);
         if (!$this->studyFile) {
             throw new InvalidArgumentException('No study file provided');
         }
         
         foreach ($this->experimentFiles as $number => $file) {
             if (!isset($this->lifespanFiles[$number])) {
-                throw new InvalidArgumentException('No lifespan file for experiment ' . $number);
+                throw new InvalidArgumentException("No lifespan file for experiment {$number} provided");
             }
         }
         foreach ($this->lifespanFiles as $number => $file) {
             if (!isset($this->experimentFiles[$number])) {
-                throw new InvalidArgumentException('No experiment file for lifespan ' . $number);
+                throw new InvalidArgumentException("No experiment file for lifespan {$number} provided");
             }
         }
 

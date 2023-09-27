@@ -19,7 +19,7 @@ class Module extends \yii\base\Module
     {
 
 //        \Yii::configure($this, require __DIR__ . '/config.php');
-        
+
         parent::init();
 
         \Yii::$app->setComponents([
@@ -39,6 +39,9 @@ class Module extends \yii\base\Module
             ],
 
         ]);
+        
+        
+//        \Yii::$app->urlManager->setBaseUrl(\Yii::$app->urlManager->baseUrl . '/contribute/');
 
         // custom initialization code goes here
     }

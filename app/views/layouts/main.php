@@ -14,6 +14,7 @@ use yii\widgets\Breadcrumbs;
 CmsAsset::register($this);
 $css = getenv('BASE_URL') ? '/' . getenv('BASE_URL') . '/assets/css/main.css' : '/assets/css/main.css';
 $this->registerCssFile($css);
+$title = $this->title ?? 'ALEC mice - Animal Life Expectancy Comparisons in Mice';
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -23,7 +24,7 @@ $this->registerCssFile($css);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title><?= Html::encode($title) ?></title>
     <?php $this->head() ?>
 </head>
 <body class="alec">
@@ -32,7 +33,7 @@ $this->registerCssFile($css);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'ALEC mice - Animal Life Expectancy Comparisons in Mice', 
+        'brandLabel' => $title, 
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top alec-navbar',

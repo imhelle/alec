@@ -225,6 +225,10 @@ form#uploadForm {
     background: #6563bb;
 }
 
+.alec button.navbar-toggler {
+    display: none;
+}
+
 .alec .s2-togall-button {
     display: inline-block;
     font-weight: 400;
