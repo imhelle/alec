@@ -80,4 +80,9 @@ class Study extends \yii\db\ActiveRecord
     {
         return new StudyQuery(get_called_class());
     }
+    
+    public function getCohortsCount()
+    {
+        return \app\models\Cohort::find()->where(['study_id' => $this->id])->count();
+    }
 }

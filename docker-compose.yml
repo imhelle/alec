@@ -48,7 +48,7 @@ services:
     user: ${ALEC_UID}
     environment:
        MYSQL_ROOT_PASSWORD: secret
-       MYSQL_DATABASE: alec
+       MYSQL_DATABASE: alec2
 #      MYSQL_USER: sandbox_user
 #      MYSQL_PASSWORD: passpass
        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -58,6 +58,16 @@ services:
       - ./docker/mysql/dump.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - db_net_alec
+  alec_stat_api:
+    build: ./python-app
+    volumes:
+      - ./python-app/app:/code/app
+    container_name: alec_metrics-api
+    environment:
+      PORT: 8800
+    ports:
+      - '8800:80'
+    restart: "no"
 
 networks:
   db_net_alec:

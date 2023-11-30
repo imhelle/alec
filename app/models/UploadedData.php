@@ -114,7 +114,7 @@ class UploadedData extends Model
             $cohortData = Excel::import($file->tempName, [
                 'setFirstRecordAsKeys' => false
             ]);
-            $cohort = Cohort::saveFromData($cohortData, $study->id, $studyData);
+            $cohort = Cohort::saveFromUploadedData($cohortData, $study->id, $studyData);
             
             $lifespanFile = $this->lifespanFiles[$number];
             $lifespanData = Excel::import($lifespanFile->tempName, [

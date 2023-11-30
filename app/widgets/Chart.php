@@ -27,6 +27,7 @@ class Chart extends \yii\bootstrap5\Widget
             'borderDash' => [5, 5],
             'borderWidth' => 1,
             'steppedLine' => true,
+            'cohortId' => 123
         ],
         ];
         if ($this->charts) {

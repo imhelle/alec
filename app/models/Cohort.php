@@ -16,10 +16,13 @@ class Cohort extends ar\Cohort
         return self::find()->where(['enabled' => 1])->count();
     }
 
-    public static function saveFromData($data, $studyId, $studyData)
+    public static function saveFromUploadedData($data, $studyId, $studyData): Cohort
     {
         $dwellingId = DwellingType::findOrCreateByName(UploadedData::getRowValue('Type of dwelling', $data))->id;
-        $taxonomyId = Taxonomy::findOrCreateByName(UploadedData::getRowValue('Taxonomy name', $data))->id;
+        $taxonomyId = Taxonomy::findOrCreateByNameAndUniprot(
+            UploadedData::getRowValue('Taxonomy name', $data),
+            UploadedData::getRowValue('Taxonomy ID', $data)
+        )->id;
         $strainId = Strain::findOrCreateByNameAndTax(UploadedData::getRowValue('Strain', $data), $taxonomyId)->id;
         $activeSubstanceId = ActiveSubstance::findOrCreateByName(UploadedData::getRowValue('Active substance name', $data))->id;
         $userId = \Yii::$app->user->getIsGuest() ? 'guest_' . \Yii::$app->request->userIP : \Yii::$app->user->id;
@@ -50,6 +53,7 @@ class Cohort extends ar\Cohort
         $model->health_parameters = null;
         $model->timestamp = date('Y-m-d H:i:s');
         $model->user_id = $userId;
+        $model->source = 'upload';
         if (!$model->save()) {
             var_dump($model->errors);
         }
@@ -153,7 +157,7 @@ class Cohort extends ar\Cohort
         return $this->lifespanValues;
     }
 
-    public static function buildLabel($query)
+    public static function buildLabelByQuery($query): string
     {
         
         if ($query == " (`enabled`=1) AND (`active_substance_id` IS NULL)") {
@@ -216,6 +220,51 @@ class Cohort extends ar\Cohort
         }
         $label = implode(', ', $labelArray);
         return !$label ? 'All' : $label;
+    }
+    
+    public static function getDataFromQuery($query)
+    {
+        return self::find()
+            ->leftJoin('{{%lifespan}}', '{{%lifespan}}.cohort_id={{%cohort}}.id')
+            ->leftJoin('{{%strain}}', '{{%cohort}}.strain_id={{%strain}}.id')
+            ->select('{{%lifespan}}.age')
+            ->where($query)
+            ->orderBy('age desc')
+            ->column();
+    }
+    
+    public static function buildLabelById($cohortId)
+    {
+        $labelArray =  self::find()
+            ->select(['{{%study}}.pubmed_id', 
+                '{{%strain}}.name strain_name', '{{%cohort}}.sex', '{{%active_substance}}.name substance_name', 
+                '{{%cohort}}.sex', '{{%cohort}}.dosage', 'site'])
+            ->leftJoin('{{%study}}', '{{%cohort}}.study_id={{%study}}.id')
+            ->leftJoin('{{%strain}}', '{{%cohort}}.strain_id={{%strain}}.id')
+            ->leftJoin('{{%active_substance}}', '{{%cohort}}.active_substance_id={{%active_substance}}.id')
+            ->where(['{{%cohort}}.id' => $cohortId])
+            ->asArray()
+            ->one();
+        
+        if(!$labelArray['substance_name']) {
+            $labelArray['substance_name'] = 'Control';
+        }
+        
+        if(!$labelArray['substance_name']) {
+            $labelArray['substance_name'] = 'Control';
+        }
+
+        $labelArray['pubmed_id'] = 'PMID ' . $labelArray['pubmed_id'];
+        $labelArray['sex'] = ucfirst($labelArray['sex']);
+        
+        return (implode(array_filter($labelArray), ', '));
+    }
+    
+    public static function getLifespansArray($id)
+    {
+        $lifespans = array_map('intval', Lifespan::find()->where(['cohort_id' => $id])->select('age')->column());
+        arsort($lifespans);
+        return array_values($lifespans);
     }
 }
 

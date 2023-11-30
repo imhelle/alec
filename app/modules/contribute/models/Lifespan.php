@@ -1,11 +1,10 @@
 <?php
 
-namespace app\models;
+namespace app\modules\contribute\models;
 
 use app\modules\contribute\models\traits\ActiveRecordTrait;
-use InvalidArgumentException;
 
-class DwellingType extends ar\DwellingType
+class Lifespan extends \app\models\Lifespan
 {
     use ActiveRecordTrait;
 }

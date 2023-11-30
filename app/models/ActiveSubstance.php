@@ -13,7 +13,7 @@ class ActiveSubstance extends ar\ActiveSubstance
         $data = self::find()->all();
         return ArrayHelper::map($data, 'id', 'name');
     }
-    public static function findOrCreateByName($name): self
+    public static function findOrCreateByName($name)
     {
        $model = self::find()->where(['name' => $name])->one();
        if(!$model) {

@@ -110,6 +110,13 @@ $config = [
             // 'cache' => 'cache',
         ],
     ],
+    'container' => [
+        'definitions' => [
+            app\infrastructure\MetricsApiInterface::class => function (\yii\di\Container $container) {
+                return new app\infrastructure\MetricsApi(getenv('METRICS_API_URL'));
+            },
+        ]
+    ],
     'defaultRoute' => 'cms/index',
     'params' => $params,
     'runtimePath' => __DIR__ . '/../runtime',

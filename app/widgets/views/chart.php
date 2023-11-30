@@ -114,6 +114,14 @@ echo \dosamigos\chartjs\ChartJs::widget([
 $this->registerJs(
 /** @lang js */
 <<<JS
+
+$.ajaxSetup({
+    beforeSend: function (xhr)
+    {
+       xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
+    }
+});
+
 // $('#js-legend').html(chartJS_alecChart.generateLegend());
 chartJS_alecChart.options.legendCallback = function(chart){
   let html = '<ul>';
@@ -154,17 +162,96 @@ function shuffle (arr) {
                 'pointHoverBackgroundColor': '#fff',
                 'pointHoverBorderColor': color,
                 'data': data.coords,
-                'steppedLine': true
+                'steppedLine': true,
+                'cohortId': data.cohortId
             }
             chartJS_alecChart.data.datasets.push(newDataset);
+            chartJS_alecChart.update();  
+    }
+    
+    function updateOvermortality()
+    {
+        charts = chartJS_alecChart.data.datasets
+        let chartsToSave = [];
+        
+        let overmort_array = {};
+        $('span#cohort_overmort').each(function () {
+            overmort = '';
+            if ($(this).text() != 'Calculate') {
+                cohort_id = $(this).attr("cohort_id")
+                overmort = $(this).text()
+                overmort_array[cohort_id] = overmort
+            }
+            if (overmort) {
+                            $.each( charts.slice(1), function( index, chart ) {
+                console.log('chart.cohortId ' + chart.cohortId);
+                console.log('cohort_id ' + cohort_id);
+                console.log(chart.label);
+                console.log(chart.label.indexOf(overmort));
+                console.log(chart.cohortId == cohort_id);
+                
+                if (chart.cohortId == cohort_id && chart.label.indexOf(overmort) == -1) {
+                    chartJS_alecChart.data.datasets.slice(1)[index].label = chart.label + ', Overmortality: ' + overmort;
+                    console.log(chartJS_alecChart.data.datasets.slice(1)[index].label);
+                    chartJS_alecChart.update();
+                }
+            });
+            }
+            
+            
+
+        });
             chartJS_alecChart.update();
             
+            console.log(overmort_array)
     }
+    
+    $(document).on('click', '#calc_overmortality', function() {
+        cohort_id = $(this).attr('cohort_id')
+        let element = $(this)
+        $.ajaxSetup({
+            crossDomain: true,
+        });
+        $.ajax({
+            url : "{$basePath}/site/intra-study-metrics-by-cohort?cohortId=" + cohort_id,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            crossDomain: true,
+            success: function(response) {
+                // data = JSON.parse(response)
+                console.log(response)
+                element.closest("span#cohort_overmort").html(response.result.overmortality.verdict + ' p=' + response.result.overmortality.pval.toFixed(3))
+                updateOvermortality();
+            },
+
+            error: function(){
+                console.log('error')
+            },
+        });
+    });
     
     $(document).on('click', '#clear_data', function() {
         chartJS_alecChart.data.datasets.length = 1;
         chartJS_alecChart.update();
     });
+    
+    $(document).on('click', '#plot_cohort', function() {
+        cohort_id = $(this).attr('cohort_id')
+        button = $(this)
+        let element = $(this)
+        $.ajaxSetup({
+            crossDomain: true,
+        });
+        $.get("{$basePath}/site/plot-by-cohort?cohortId=" + cohort_id, function(data, status){              
+            data = JSON.parse(data)
+            drawChart(data);
+            updateOvermortality();
+            button.hide();
+        });
+    
+    });
+    
 //  'scales' => [
 //                    'xAxes' => [[
 //                        'type' => 'linear',
@@ -240,6 +327,7 @@ function shuffle (arr) {
                 'pointHoverBorderColor': value.pointHoverBorderColor,
                 'data': value.data,
                 'steppedLine': value.steppedLine,
+                'cohortId': value.cohortId,
                 'hidden':chartJS_alecChart.legend.legendItems[index].hidden
             }
             chartsToSave.push(newDataset);

@@ -173,12 +173,12 @@ JS
                     },
                     'format' => 'html',
                     'headerOptions' => ['style' => 'text-align: center'],
-                    'contentOptions' => ['style'=>'vertical-align: middle; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
                 ],
                 [
                     'attribute' => 'year',
                     'headerOptions' => ['style' => 'text-align: center'],
-                    'contentOptions' => ['style'=>'vertical-align: middle; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
                 ],
 //                [
 //                    'attribute' => 'remarks',
@@ -204,7 +204,24 @@ JS
                         return '';
                     },
                     'headerOptions' => ['style' => 'min-width:150px; text-align: center'],
-                    'contentOptions' => ['style'=>'vertical-align: middle; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
+                ], [
+                    'label' => 'Overmortality',
+                    'value' => function ($model) {
+                        return "<span id='cohort_overmort' cohort_id='{$model->id}'><a class='btn btn-blue' id='calc_overmortality' cohort_id='{$model->id}'>Calculate</a></span>";
+                    },
+                    'format' => 'raw',
+                    'headerOptions' => ['style' => 'min-width:90px; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
+                ],
+                [
+                    'label' => '',
+                    'value' => function ($model) {
+                        return "<a class='btn btn-blue' id='plot_cohort' cohort_id='{$model->id}'>Plot</a>";
+                    },
+                    'format' => 'raw',
+                    'headerOptions' => ['style' => 'min-width:50px; text-align: center'],
+                    'contentOptions' => ['style' => 'vertical-align: middle; text-align: center'],
                 ],
             ],
         ]); ?>

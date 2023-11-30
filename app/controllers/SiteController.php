@@ -3,10 +3,13 @@
 namespace app\controllers;
 
 use app\infrastructure\ChartHelper;
+use app\infrastructure\MetricsApi;
+use app\infrastructure\MetricsApiInterface;
 use app\models\Cohort;
 use app\models\SavedLink;
 use app\modules\contribute\models\LoginForm;
 use Yii;
+use yii\db\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -18,6 +21,8 @@ use yii\web\UploadedFile;
  */
 class SiteController extends Controller
 {
+
+    public $enableCsrfValidation = false;
 
     public function behaviors()
     {
@@ -86,7 +91,7 @@ class SiteController extends Controller
                 $charts = json_decode($savedLink->chart, true);
             }
         }
-        $allControlsCoordinates = ChartHelper::getCoordinates($this->getDataFromCohortQuery('active_substance_id is null'));
+        $allControlsCoordinates = ChartHelper::getCoordinates(Cohort::getDataFromQuery('active_substance_id is null'));
         
         $cohortSearchModel = new Cohort();
         $cohortDataProvider = $cohortSearchModel->search(Yii::$app->request->queryParams);
@@ -94,30 +99,21 @@ class SiteController extends Controller
         $cohortIndex = strpos(strtolower($cohortDataQuery), 'where') + strlen('where');
         $cohortQuery = substr($cohortDataQuery, $cohortIndex);
         
-        $data = $this->getDataFromCohortQuery($cohortQuery);
+        $data = Cohort::getDataFromQuery($cohortQuery);
         $coords = ChartHelper::getCoordinates($data);
         $median = $this->getMedian($data);
         $total = Cohort::getActiveCount();
 
+//        var_dump(Yii::$app->request->isAjax);
+//        var_dump(Yii::$app->request->getQueryParam('getCoords') == 1); 
+//        die();
         if (Yii::$app->request->isAjax && Yii::$app->request->getQueryParam('getCoords') == 1) {
-            $label = Cohort::buildLabel($cohortQuery);
+            $label = Cohort::buildLabelByQuery($cohortQuery);
             return (json_encode(['label' => $label, 'coords' => $coords, 'median' => $median]));
         }
 
         if (Yii::$app->request->getQueryParam('getFile') == 1) {
-            $label = preg_replace("/[^A-Za-z0-9]+/", '_', Cohort::buildLabel($cohortQuery));
-            $file = fopen('php://memory', 'w');
-            foreach ($data as $line) {
-                fputcsv($file, [$line]);
-            }
-            fseek($file, 0);
-            header("Cache-Control: must-revalidate");
-            header("Pragma: must-revalidate");
-            header("Content-type: text/csv");
-            header("Content-disposition: attachment; filename=$label.csv");
-            fpassthru($file);
-            exit();
-            
+            $this->sendFile($cohortQuery, $data);
         }
 
         return $this->render('index', [
@@ -128,6 +124,22 @@ class SiteController extends Controller
             'median' => $median,
             'total' => $total,
         ]);
+    }
+    
+    private function sendFile($cohortQuery, $data)
+    {
+        $label = preg_replace("/[^A-Za-z0-9]+/", '_', Cohort::buildLabelByQuery($cohortQuery));
+        $file = fopen('php://memory', 'w');
+        foreach ($data as $line) {
+            fputcsv($file, [$line]);
+        }
+        fseek($file, 0);
+        header("Cache-Control: must-revalidate");
+        header("Pragma: must-revalidate");
+        header("Content-type: text/csv");
+        header("Content-disposition: attachment; filename=$label.csv");
+        fpassthru($file);
+        exit();
     }
     
     public function actionChart($link)
@@ -167,24 +179,58 @@ class SiteController extends Controller
         $median = $this->getMedian($survivalData);
         return (json_encode(['label' => $file->name, 'coords' => $coordinates, 'median' => $median]));
     }
+    
+    public function actionIntraStudyMetricsByGraph()
+    {
+        $this->enableCsrfValidation = false;
+        try {
+             $data = Yii::$app->request->rawBody;
+            /** @var MetricsApiInterface $metricsApi */
+            $metricsApi = Yii::$container->get(MetricsApiInterface::class);
+            
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+
+        return $metricsApi->getIntraStudyMetricsByGraph($data);
+    }
+
+    public function actionIntraStudyMetricsByCohort($cohortId)
+    {
+        $this->enableCsrfValidation = false;
+        try {
+            $lifespans = Cohort::getLifespansArray($cohortId);
+            
+            $data = [
+                'lifespans' => $lifespans,
+                'species' => 'mice',
+                'strain' => '123'                
+                ];
+
+            /** @var MetricsApiInterface $metricsApi */
+            $metricsApi = Yii::$container->get(MetricsApiInterface::class);
+
+        } catch (Exception $e) {
+            var_dump($e);
+        }
+        
+        return $metricsApi->getIntraStudyMetricsByLifespans(json_encode($data));
+    }
+    
+    public function actionPlotByCohort($cohortId)
+    {
+        $label = Cohort::buildLabelById($cohortId);
+        $data = Cohort::getLifespansArray($cohortId);
+        $coords = ChartHelper::getCoordinates($data);
+        $median = $this->getMedian($data);
+        return (json_encode(['label' => $label, 'coords' => $coords, 'median' => $median, 'cohortId' => $cohortId]));
+    }
 
     public function actionError()
     {
         return $this->render('error', [
 
         ]);
-    }
-
-    private function getDataFromCohortQuery($query): array
-    {
-//        var_dump($query); die;
-        return \app\models\Cohort::find()
-            ->leftJoin('{{%lifespan}}', '{{%lifespan}}.cohort_id={{%cohort}}.id')
-            ->leftJoin('{{%strain}}', '{{%cohort}}.strain_id={{%strain}}.id')
-            ->select('{{%lifespan}}.age')
-            ->where($query)
-            ->orderBy('age desc')
-            ->column();
     }
 
     private function getMedian($data)
@@ -194,7 +240,7 @@ class SiteController extends Controller
         }
         arsort($data);
         $keys = array_keys($data);
-        return $data[round(count($keys) / 2)];
+        return $data[$keys[round(count($keys) / 2)]];
     }
 
 }
